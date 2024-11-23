@@ -1,5 +1,5 @@
-import { connectToDatabase } from '../../../../lib/mongodb';
-import Entry from '../../../../models/Entry';
+import { connectToDatabase } from '../../../lib/mongodb';
+import Entry from '../../../models/Entry';
 
 // Get entry by registration
 export async function GET(req, { params }) {

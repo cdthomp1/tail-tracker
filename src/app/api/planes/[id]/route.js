@@ -1,5 +1,5 @@
-import { connectToDatabase } from '../../../../lib/mongodb';
-import Plane from '../../../../models/Plane';
+import { connectToDatabase } from '../../../lib/mongodb';
+import Plane from '../../../models/Plane';
 
 // GET plane by registration
 export async function GET(req, { params }) {
