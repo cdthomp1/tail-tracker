@@ -1,6 +1,16 @@
 'use client';
 
+import { useState } from 'react';
+
 export default function EntriesList({ entries, onDelete }) {
+    const [deletingId, setDeletingId] = useState(null); // Track the entry being deleted
+
+    const handleDelete = async (id) => {
+        setDeletingId(id); // Set the current deleting entry
+        await onDelete(id); // Perform the delete action
+        setDeletingId(null); // Reset the deleting entry
+    };
+
     if (!entries.length) return <p className="text-center text-gray-500">No entries yet!</p>;
 
     return (
@@ -21,9 +31,7 @@ export default function EntriesList({ entries, onDelete }) {
 
                     {/* Card Content */}
                     <div className="p-4">
-                        {/* Registration */}
                         <h3 className="text-lg font-bold text-gray-800">{entry.registration || 'Unknown Aircraft'}</h3>
-                        {/* Interaction Type */}
                         <p className="text-sm text-gray-600 mb-2">
                             {entry.interactionType === 'saw' ? 'Saw' : 'Flown'}
                         </p>
@@ -57,12 +65,18 @@ export default function EntriesList({ entries, onDelete }) {
 
                     {/* Action Buttons */}
                     <div className="px-4 pb-4">
-                        <button
-                            className="w-full bg-red-500 text-white py-2 rounded-md hover:bg-red-600"
-                            onClick={() => onDelete(entry._id)}
-                        >
-                            Delete
-                        </button>
+                        {deletingId === entry._id ? (
+                            <div className="w-full bg-gray-200 text-center py-2 rounded-md">
+                                <span className="text-gray-500">Deleting...</span>
+                            </div>
+                        ) : (
+                            <button
+                                className="w-full bg-red-500 text-white py-2 rounded-md hover:bg-red-600"
+                                onClick={() => handleDelete(entry._id)}
+                            >
+                                Delete
+                            </button>
+                        )}
                     </div>
                 </div>
             ))}
