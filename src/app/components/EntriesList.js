@@ -53,11 +53,11 @@ export default function EntriesList({ entries, onDelete }) {
                                 <p className="text-sm text-gray-700">
                                     <strong>Flight Number:</strong> {entry.flightNumber || 'N/A'}
                                 </p>
+                                <p className="text-sm text-gray-700 mt-2">
+                                    <strong>Notes:</strong> {entry.notes || 'No notes provided'}
+                                </p>
                             </>
                         )}
-                        <p className="text-sm text-gray-700 mt-2">
-                            <strong>Notes:</strong> {entry.notes || 'No notes provided'}
-                        </p>
                         <p className="text-xs text-gray-500 mt-2">
                             {entry.date && new Date(entry.date).toLocaleDateString()}
                         </p>
