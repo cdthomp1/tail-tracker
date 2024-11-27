@@ -27,7 +27,7 @@ export async function GET(request) {
             }
         );
         const flightData = await flightRes.json();
-
+        console.log(JSON.stringify(flightData))
         return NextResponse.json({
             aircraft: aircraftData.response.aircraft,
             flight: flightData.data?.[0] || null,
