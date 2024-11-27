@@ -26,6 +26,7 @@ export async function GET(request) {
                 },
             }
         );
+        console.log('process.env.FLIGHTRADAR_API_KEY', process.env.FLIGHTRADAR_API_KEY)
         const flightData = await flightRes.json();
         console.log(JSON.stringify(flightData))
         return NextResponse.json({
