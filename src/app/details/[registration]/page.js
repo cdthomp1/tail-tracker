@@ -21,7 +21,6 @@ export default function Details({ params: paramsPromise }) {
             try {
                 setLoading(true);
 
-                // Resolve paramsPromise
                 const resolvedParams = await paramsPromise;
                 if (!resolvedParams || !resolvedParams.registration) {
                     throw new Error('Invalid parameters');
@@ -30,28 +29,19 @@ export default function Details({ params: paramsPromise }) {
 
                 const { registration } = resolvedParams;
 
-                // Fetch Aircraft Data
-                const aircraftRes = await fetch(`https://api.adsbdb.com/v0/aircraft/${registration}`);
-                const aircraftData = await aircraftRes.json();
-                setAircraftData(aircraftData.response.aircraft);
+                // Fetch data from serverless function
+                const res = await fetch(`/api/details?registration=${registration}`);
+                const data = await res.json();
 
-                // Fetch Flight Position
-                const flightRes = await fetch(
-                    `https://fr24api.flightradar24.com/api/live/flight-positions/full?registrations=${registration}`,
-                    {
-                        method: 'GET',
-                        headers: {
-                            'Authorization': `Bearer ${process.env.NEXT_PUBLIC_FLIGHTRADAR_API_KEY}`,
-                            'Accept-Version': 'v1',
-                        },
-                    }
-                );
-                const flightData = await flightRes.json();
-                if (flightData.data && flightData.data.length > 0) {
-                    setFlightPosition(flightData.data[0]);
+                if (data.error) {
+                    throw new Error(data.error);
                 }
+
+                setAircraftData(data.aircraft);
+                setFlightPosition(data.flight);
             } catch (err) {
                 setError('Failed to fetch data.');
+                console.error(err);
             } finally {
                 setLoading(false);
             }
@@ -170,7 +160,7 @@ export default function Details({ params: paramsPromise }) {
                             <strong>Ground Speed:</strong> {flightPosition.gspeed || 'No information provided'} knots
                         </p>
                         <p className="text-sm text-gray-600">
-                            <strong>Vertical Speed:</strong> {flightPosition.vspeed + " ft/min" || 'No information provided'}
+                            <strong>Vertical Speed:</strong> {flightPosition.vspeed + ' ft/min' || 'No information provided'}
                         </p>
                         <p className="text-sm text-gray-600">
                             <strong>Track:</strong> {flightPosition.track || 'No information provided'}°
@@ -198,8 +188,8 @@ export default function Details({ params: paramsPromise }) {
                             style={{ width: '100%', height: '100%' }}
                         >
                             <Marker
-                                width={50}
                                 anchor={[flightPosition.lat, flightPosition.lon]}
+                                offset={[12, 12]}
                             >
                                 <img
                                     src="/plane-solid.svg"
