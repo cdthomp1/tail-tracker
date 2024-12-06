@@ -1,19 +1,16 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { useSearchParams, useRouter } from 'next/navigation';
+import { useRouter } from 'next/navigation';
 import { Map, Marker } from 'pigeon-maps';
 
 export default function Details({ params: paramsPromise }) {
     const [params, setParams] = useState(null);
-    const [aircraftData, setAircraftData] = useState(null);
-    const [flightPosition, setFlightPosition] = useState(null);
+    const [data, setData] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [currentPhotoIndex, setCurrentPhotoIndex] = useState(0);
 
-    const searchParams = useSearchParams();
-    const entryImage = searchParams.get('image');
     const router = useRouter();
 
     useEffect(() => {
@@ -29,16 +26,14 @@ export default function Details({ params: paramsPromise }) {
 
                 const { registration } = resolvedParams;
 
-                // Fetch data from serverless function
                 const res = await fetch(`/api/details?registration=${registration}`);
-                const data = await res.json();
+                const result = await res.json();
 
-                if (data.error) {
-                    throw new Error(data.error);
+                if (result.error) {
+                    throw new Error(result.error);
                 }
 
-                setAircraftData(data.aircraft);
-                setFlightPosition(data.flight);
+                setData(result);
             } catch (err) {
                 setError('Failed to fetch data.');
                 console.error(err);
@@ -53,20 +48,8 @@ export default function Details({ params: paramsPromise }) {
     if (loading) return <p className="text-center text-gray-500">Loading...</p>;
     if (error) return <p className="text-center text-red-500">{error}</p>;
 
-    const {
-        type,
-        icao_type,
-        manufacturer,
-        mode_s,
-        registration,
-        registered_owner_country_name,
-        registered_owner,
-        url_photo: apiPhoto,
-    } = aircraftData || {};
-
-    const photos = [];
-    if (entryImage) photos.push(entryImage);
-    if (apiPhoto) photos.push(apiPhoto);
+    const { aircraft, flight, image, location, date, notes, interactionType } = data || {};
+    const photos = [image, aircraft?.url_photo].filter(Boolean);
 
     const handleNextPhoto = () => {
         setCurrentPhotoIndex((prevIndex) => (prevIndex + 1) % photos.length);
@@ -75,6 +58,9 @@ export default function Details({ params: paramsPromise }) {
     const handlePrevPhoto = () => {
         setCurrentPhotoIndex((prevIndex) => (prevIndex - 1 + photos.length) % photos.length);
     };
+
+    const userLocale = navigator.language || 'en-US'; // Fallback to 'en-US'
+
 
     return (
         <div className="min-h-screen bg-gray-50 flex flex-col items-center py-6 px-4 sm:px-8">
@@ -104,7 +90,6 @@ export default function Details({ params: paramsPromise }) {
                                 >
                                     ‹
                                 </button>
-
                                 <button
                                     onClick={handleNextPhoto}
                                     className="absolute top-1/2 right-2 transform -translate-y-1/2 bg-gray-800 text-white p-2 rounded-full hover:bg-gray-700"
@@ -118,61 +103,56 @@ export default function Details({ params: paramsPromise }) {
                     <p className="text-center text-gray-500">No photos available</p>
                 )}
 
-                {/* Aircraft Details */}
+                {/* Documentation Details */}
                 <div className="space-y-2 mb-6">
+                    <h2 className="text-lg font-semibold text-gray-800 mb-2">Interaction Details</h2>
+                    <p className="text-sm text-gray-600"><strong>Location:</strong> {location || 'N/A'}</p>
                     <p className="text-sm text-gray-600">
-                        <strong>Type:</strong> {type || 'No information provided at this time'}
+                        <strong>Interaction:</strong>{' '}
+                        {interactionType ? interactionType.charAt(0).toUpperCase() + interactionType.slice(1) : 'N/A'}
                     </p>
-                    <p className="text-sm text-gray-600">
-                        <strong>ICAO Type:</strong> {icao_type || 'No information provided at this time'}
-                    </p>
-                    <p className="text-sm text-gray-600">
-                        <strong>Manufacturer:</strong> {manufacturer || 'No information provided at this time'}
-                    </p>
-                    <p className="text-sm text-gray-600">
-                        <strong>Mode S:</strong> {mode_s || 'No information provided at this time'}
-                    </p>
-                    <p className="text-sm text-gray-600">
-                        <strong>Registration:</strong> {registration || 'No information provided at this time'}
-                    </p>
-                    <p className="text-sm text-gray-600">
-                        <strong>Country:</strong> {registered_owner_country_name || 'No information provided at this time'}
-                    </p>
-                    <p className="text-sm text-gray-600">
-                        <strong>Owner:</strong> {registered_owner || 'No information provided at this time'}
-                    </p>
+                    <p className="text-sm text-gray-600"><strong>Date:</strong> {new Date(date).toLocaleString() || 'N/A'}</p>
+                    <p className="text-sm text-gray-600"><strong>Notes:</strong> {notes || 'N/A'}</p>
                 </div>
 
+                {/* Aircraft Details */}
+                {aircraft && (
+                    <div className="space-y-2 mb-6">
+                        <h2 className="text-lg font-semibold text-gray-800 mb-2">Aircraft Details</h2>
+                        <p className="text-sm text-gray-600"><strong>Type:</strong> {aircraft.type || 'N/A'}</p>
+                        <p className="text-sm text-gray-600"><strong>ICAO Type:</strong> {aircraft.icao_type || 'N/A'}</p>
+                        <p className="text-sm text-gray-600"><strong>Manufacturer:</strong> {aircraft.manufacturer || 'N/A'}</p>
+                        <p className="text-sm text-gray-600"><strong>Mode S:</strong> {aircraft.mode_s || 'N/A'}</p>
+                        <p className="text-sm text-gray-600"><strong>Registration:</strong> {aircraft.registration || 'N/A'}</p>
+                        <p className="text-sm text-gray-600"><strong>Country:</strong> {aircraft.registered_owner_country_name || 'N/A'}</p>
+                        <p className="text-sm text-gray-600"><strong>Owner:</strong> {aircraft.registered_owner || 'N/A'}</p>
+                    </div>
+                )}
+
+
                 {/* Current Flight Section */}
-                {flightPosition ? (
+                {flight ? (
                     <div className="mb-6">
                         <h2 className="text-lg font-semibold text-gray-800 mb-2">Current Flight</h2>
+                        <p className="text-sm text-gray-600"><strong>Flight:</strong> {flight.flight || 'N/A'}</p>
+                        <p className="text-sm text-gray-600"><strong>Callsign:</strong> {flight.callsign || 'N/A'}</p>
+                        <p className="text-sm text-gray-600"><strong>Altitude:</strong> {flight.alt || 'N/A'} ft</p>
+                        <p className="text-sm text-gray-600"><strong>Ground Speed:</strong> {flight.gspeed || 'N/A'} knots</p>
+                        <p className="text-sm text-gray-600"><strong>Track/Heading:</strong> {flight.track || 'N/A'}°</p>
+                        <p className="text-sm text-gray-600"><strong>Origin:</strong> {flight.orig_icao || 'N/A'} ({flight.orig_iata || 'N/A'})</p>
+                        <p className="text-sm text-gray-600"><strong>Destination:</strong> {flight.dest_icao || 'N/A'} ({flight.dest_iata || 'N/A'})</p>
                         <p className="text-sm text-gray-600">
-                            <strong>Flight:</strong> {flightPosition.flight || 'No information provided'}
-                        </p>
-                        <p className="text-sm text-gray-600">
-                            <strong>Callsign:</strong> {flightPosition.callsign || 'No information provided'}
-                        </p>
-                        <p className="text-sm text-gray-600">
-                            <strong>Altitude:</strong> {flightPosition.alt || 'No information provided'} ft
-                        </p>
-                        <p className="text-sm text-gray-600">
-                            <strong>Ground Speed:</strong> {flightPosition.gspeed || 'No information provided'} knots
-                        </p>
-                        <p className="text-sm text-gray-600">
-                            <strong>Vertical Speed:</strong> {flightPosition.vspeed + ' ft/min' || 'No information provided'}
-                        </p>
-                        <p className="text-sm text-gray-600">
-                            <strong>Track:</strong> {flightPosition.track || 'No information provided'}°
-                        </p>
-                        <p className="text-sm text-gray-600">
-                            <strong>Origin:</strong> {flightPosition.orig_icao || 'No information provided'} ({flightPosition.orig_iata || 'N/A'})
-                        </p>
-                        <p className="text-sm text-gray-600">
-                            <strong>Destination:</strong> {flightPosition.dest_icao || 'No information provided'} ({flightPosition.dest_iata || 'N/A'})
-                        </p>
-                        <p className="text-sm text-gray-600">
-                            <strong>ETA:</strong> {flightPosition.eta || 'No information provided'}
+                            <strong>ETA:</strong>{' '}
+                            {flight.eta ?
+                                new Intl.DateTimeFormat(userLocale, {
+                                    year: 'numeric',
+                                    month: 'short',
+                                    day: 'numeric',
+                                    hour: '2-digit',
+                                    minute: '2-digit',
+                                    timeZoneName: 'short'
+                                }).format(new Date(flight.eta))
+                                : 'N/A'}
                         </p>
                     </div>
                 ) : (
@@ -180,24 +160,21 @@ export default function Details({ params: paramsPromise }) {
                 )}
 
                 {/* Map Section */}
-                {flightPosition && (
+                {flight && (
                     <div className="w-full h-64">
                         <Map
-                            defaultCenter={[flightPosition.lat, flightPosition.lon]}
+                            defaultCenter={[flight.lat, flight.lon]}
                             defaultZoom={6}
                             style={{ width: '100%', height: '100%' }}
                         >
-                            <Marker
-                                anchor={[flightPosition.lat, flightPosition.lon]}
-                                offset={[12, 12]}
-                            >
+                            <Marker anchor={[flight.lat, flight.lon]}>
                                 <img
                                     src="/plane-solid.svg"
                                     alt="Airplane Icon"
                                     style={{
                                         width: '24px',
                                         height: '24px',
-                                        transform: `rotate(${flightPosition.track - 90}deg)`,
+                                        transform: `rotate(${flight.track - 90}deg)`,
                                     }}
                                 />
                             </Marker>

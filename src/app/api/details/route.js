@@ -1,5 +1,6 @@
 // app/api/details/route.js
-
+import { connectToDatabase } from '../../lib/mongodb';
+import Entry from '../../models/Entry';
 import { NextResponse } from 'next/server';
 
 export async function GET(request) {
@@ -8,6 +9,17 @@ export async function GET(request) {
 
     if (!registration) {
         return NextResponse.json({ error: 'Registration is required' }, { status: 400 });
+    }
+
+    let entry;
+
+    try {
+        entry = await Entry.findOne({ registration }); // Query by registration
+        if (!entry) {
+            return new Response(JSON.stringify({ error: "Entry not found" }), { status: 404 });
+        }
+    } catch (error) {
+        return new Response(JSON.stringify({ error: "Invalid registration or server error" }), { status: 500 });
     }
 
     try {
@@ -29,6 +41,7 @@ export async function GET(request) {
         const flightData = await flightRes.json();
 
         return NextResponse.json({
+            ...entry._doc,
             aircraft: aircraftData.response.aircraft,
             flight: flightData.data?.[0] || null,
         });

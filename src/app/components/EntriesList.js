@@ -25,8 +25,7 @@ export default function EntriesList({ entries, onDelete }) {
                 >
                     <Link
                         href={{
-                            pathname: `/details/${entry.registration}`,
-                            query: { image: entry.image || '' }, // Pass the entry image as a query parameter
+                            pathname: `/details/${entry.registration}`
                         }}
                         className="block"
                     >
@@ -61,7 +60,7 @@ export default function EntriesList({ entries, onDelete }) {
                     </Link>
 
                     {/* Action Button */}
-                    <div className="px-4 pb-4">
+                    {/* <div className="px-4 pb-4">
                         {deletingId === entry._id ? (
                             <div className="w-full bg-gray-200 text-center py-2 rounded-md">
                                 <span className="text-gray-500">Deleting...</span>
@@ -77,7 +76,7 @@ export default function EntriesList({ entries, onDelete }) {
                                 Delete
                             </button>
                         )}
-                    </div>
+                    </div> */}
                 </div>
             ))}
         </div>
