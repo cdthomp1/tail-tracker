@@ -14,6 +14,7 @@ export default function Details({ params: paramsPromise }) {
     const router = useRouter();
 
     useEffect(() => {
+        let isMounted = true; // To prevent state updates after unmount
         const fetchData = async () => {
             try {
                 setLoading(true);
@@ -22,10 +23,9 @@ export default function Details({ params: paramsPromise }) {
                 if (!resolvedParams || !resolvedParams.registration) {
                     throw new Error('Invalid parameters');
                 }
-                setParams(resolvedParams);
-
                 const { registration } = resolvedParams;
 
+                // Fetch details data
                 const res = await fetch(`/api/details?registration=${registration}`);
                 const result = await res.json();
 
@@ -33,16 +33,25 @@ export default function Details({ params: paramsPromise }) {
                     throw new Error(result.error);
                 }
 
-                setData(result);
+                if (isMounted) {
+                    setParams(resolvedParams);
+                    setData(result);
+                }
             } catch (err) {
-                setError('Failed to fetch data.');
-                console.error(err);
+                if (isMounted) {
+                    setError('Failed to fetch data.');
+                    console.error(err);
+                }
             } finally {
-                setLoading(false);
+                if (isMounted) setLoading(false);
             }
         };
 
         fetchData();
+
+        return () => {
+            isMounted = false; // Cleanup flag
+        };
     }, [paramsPromise]);
 
     if (loading) return <p className="text-center text-gray-500">Loading...</p>;
