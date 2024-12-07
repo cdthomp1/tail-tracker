@@ -148,6 +148,7 @@ export default function Details({ params: paramsPromise }) {
                             <p className="text-sm text-gray-600"><strong>Location:</strong> {location || 'N/A'}</p>
                             <p className="text-sm text-gray-600"><strong>Interaction:</strong> {interactionType || 'N/A'}</p>
                             <p className="text-sm text-gray-600"><strong>Date:</strong> {new Date(date).toLocaleString(userLocale) || 'N/A'}</p>
+                            <p className="text-sm text-gray-600"><strong>Notes:</strong> {notes}</p>
                         </div>
                     </div>
                 </div>
