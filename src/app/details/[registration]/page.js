@@ -55,7 +55,7 @@ export default function Details({ params: paramsPromise }) {
     if (loading) return <p className="text-center text-gray-500">Loading...</p>;
     if (error) return <p className="text-center text-red-500">{error}</p>;
 
-    const { aircraft, flight, image, location, date, notes, interactionType } = data || {};
+    const { aircraft, flight, image, location, date, notes, interactionType, flightHistory } = data || {};
     const photos = [image, aircraft?.url_photo].filter(Boolean);
 
     const handleNextPhoto = () => {
@@ -66,50 +66,7 @@ export default function Details({ params: paramsPromise }) {
         setCurrentPhotoIndex((prevIndex) => (prevIndex - 1 + photos.length) % photos.length);
     };
 
-    const mockFlightHistory = [
-        {
-            icao24: "ac048d",
-            firstSeen: 1733322360,
-            estDepartureAirport: "KSLC",
-            lastSeen: 1733326918,
-            estArrivalAirport: "KOAK",
-            callsign: "SWA897  ",
-            estDepartureAirportHorizDistance: 1053,
-            estDepartureAirportVertDistance: 92,
-            estArrivalAirportHorizDistance: 1479,
-            estArrivalAirportVertDistance: 94,
-            departureAirportCandidatesCount: 1,
-            arrivalAirportCandidatesCount: 5
-        },
-        {
-            icao24: "ac048d",
-            firstSeen: 1733271860,
-            estDepartureAirport: "KDAL",
-            lastSeen: 1733280381,
-            estArrivalAirport: "KSLC",
-            callsign: "SWA3390 ",
-            estDepartureAirportHorizDistance: 2834,
-            estDepartureAirportVertDistance: 179,
-            estArrivalAirportHorizDistance: 1940,
-            estArrivalAirportVertDistance: 84,
-            departureAirportCandidatesCount: 0,
-            arrivalAirportCandidatesCount: 3
-        },
-        {
-            icao24: "ac048d",
-            firstSeen: 1733250191,
-            estDepartureAirport: "KSFO",
-            lastSeen: 1733257782,
-            estArrivalAirport: "KDEN",
-            callsign: "SWA2712 ",
-            estDepartureAirportHorizDistance: 504,
-            estDepartureAirportVertDistance: 42,
-            estArrivalAirportHorizDistance: 5548,
-            estArrivalAirportVertDistance: 17,
-            departureAirportCandidatesCount: 0,
-            arrivalAirportCandidatesCount: 17
-        }
-    ];
+
 
     const userLocale = navigator.language || 'en-US';
 
@@ -125,11 +82,11 @@ export default function Details({ params: paramsPromise }) {
             <h1 className="text-2xl font-bold text-gray-800 mb-4 text-center">Aircraft Details</h1>
 
             {/* Responsive Layout for Details and Image */}
-            <div className="flex flex-col lg:flex-row lg:gap-6 mb-6">
+            <div className="flex flex-col lg:flex-row lg:gap-6 bg-white shadow-md rounded-lg mb-6">
                 {/* Left Column: Airplane Info and Sighting Info */}
-                <div className="flex-1">
-                    <div className="bg-white shadow-md rounded-lg p-6 mb-6 lg:mb-0">
-                        <h2 className="text-lg font-semibold text-gray-800 mb-4">Airplane Info</h2>
+                <div className="flex-1  p-6 mb-6 ">
+                    <div className="lg:mb-0">
+                        <h2 className="text-lg font-semibold text-gray-800 mb-2">Airplane Info</h2>
                         {aircraft && (
                             <div className="space-y-2">
                                 <p className="text-sm text-gray-600"><strong>Type:</strong> {aircraft.type || 'N/A'}</p>
@@ -140,8 +97,8 @@ export default function Details({ params: paramsPromise }) {
                         )}
                     </div>
 
-                    <div className="bg-white shadow-md rounded-lg p-6">
-                        <h2 className="text-lg font-semibold text-gray-800 mb-4">Sighting Info</h2>
+                    <div>
+                        <h2 className="text-lg font-semibold text-gray-800 mt-4 mb-2">Sighting Info</h2>
                         <div className="space-y-2">
                             <p className="text-sm text-gray-600"><strong>Location:</strong> {location || 'N/A'}</p>
                             <p className="text-sm text-gray-600"><strong>Interaction:</strong> {interactionType || 'N/A'}</p>
@@ -152,7 +109,7 @@ export default function Details({ params: paramsPromise }) {
                 </div>
 
                 {/* Right Column: Image Carousel */}
-                <div className="lg:flex-1 bg-white shadow-md rounded-lg p-6 order-first lg:order-last">
+                <div className="lg:flex-1  p-6 order-first lg:order-last">
                     <div className="relative w-full h-80">
                         {photos.length > 0 ? (
                             <>
@@ -241,12 +198,15 @@ export default function Details({ params: paramsPromise }) {
                             </Map>
                         </div>
                     )}
+                    {!flight && (
+                        <p>No active flight</p>
+                    )}
                 </div>
 
                 {/* Flight History Table */}
                 <div className="lg:flex-1 bg-white shadow-md rounded-lg p-6">
                     <h2 className="text-lg font-semibold text-gray-800 mb-4">Flight History</h2>
-                    <div className="overflow-x-auto">
+                    <div className="overflow-x-auto max-h-[800px] overflow-y-auto">
                         <table className="w-full table-auto border-collapse">
                             <thead>
                                 <tr>
@@ -258,7 +218,7 @@ export default function Details({ params: paramsPromise }) {
                                 </tr>
                             </thead>
                             <tbody>
-                                {mockFlightHistory.map((flight, index) => (
+                                {flightHistory.map((flight, index) => (
                                     <tr key={index}>
                                         <td className="border px-4 py-2">{flight.callsign?.trim() || 'N/A'}</td>
                                         <td className="border px-4 py-2">{flight.estDepartureAirport || 'N/A'}</td>
@@ -279,6 +239,7 @@ export default function Details({ params: paramsPromise }) {
                         </table>
                     </div>
                 </div>
+
             </div>
         </div>
 
