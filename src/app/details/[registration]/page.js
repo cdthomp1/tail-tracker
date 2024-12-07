@@ -124,12 +124,11 @@ export default function Details({ params: paramsPromise }) {
 
             <h1 className="text-2xl font-bold text-gray-800 mb-4 text-center">Aircraft Details</h1>
 
-            {/* Row 1: Airplane Info and Sighting Info stacked on the left, Pictures on the right */}
-            <div className="flex flex-wrap lg:flex-nowrap gap-6 mb-6">
+            {/* Responsive Layout for Details and Image */}
+            <div className="flex flex-col lg:flex-row lg:gap-6 mb-6">
                 {/* Left Column: Airplane Info and Sighting Info */}
                 <div className="flex-1">
-                    {/* Airplane Info */}
-                    <div className="bg-white shadow-md rounded-lg p-6 mb-6">
+                    <div className="bg-white shadow-md rounded-lg p-6 mb-6 lg:mb-0">
                         <h2 className="text-lg font-semibold text-gray-800 mb-4">Airplane Info</h2>
                         {aircraft && (
                             <div className="space-y-2">
@@ -141,7 +140,6 @@ export default function Details({ params: paramsPromise }) {
                         )}
                     </div>
 
-                    {/* Sighting Info */}
                     <div className="bg-white shadow-md rounded-lg p-6">
                         <h2 className="text-lg font-semibold text-gray-800 mb-4">Sighting Info</h2>
                         <div className="space-y-2">
@@ -153,8 +151,8 @@ export default function Details({ params: paramsPromise }) {
                     </div>
                 </div>
 
-                {/* Right Column: Pictures */}
-                <div className="flex-1 bg-white shadow-md rounded-lg p-6">
+                {/* Right Column: Image Carousel */}
+                <div className="lg:flex-1 bg-white shadow-md rounded-lg p-6 order-first lg:order-last">
                     <div className="relative w-full h-80">
                         {photos.length > 0 ? (
                             <>
@@ -187,39 +185,42 @@ export default function Details({ params: paramsPromise }) {
                 </div>
             </div>
 
-            {/* Row 2: Map + Flight History Table */}
-            <div className="bg-white shadow-md rounded-lg p-6 flex flex-wrap lg:flex-nowrap gap-6">
+            {/* Map and Flight History */}
+            <div className="flex flex-col lg:flex-row lg:gap-6">
                 {/* Map Section */}
-                {flight && (
+                <div className="lg:flex-1 bg-white shadow-md rounded-lg p-6">
+                    <h2 className="text-lg font-semibold text-gray-800 mb-4">Flight Location</h2>
 
-                    <div className="flex-1">
-                        <div className="flex-1 mb-1">
-                            <h2 className="text-lg font-semibold text-gray-800 mb-4">Flight Location</h2>
-                            <div >
-                                <h3 className="font-semibold text-gray-800">Current Flight</h3>
-                                <p className="text-sm text-gray-600"><strong>Flight:</strong> {flight.flight || 'N/A'}</p>
-                                <p className="text-sm text-gray-600"><strong>Callsign:</strong> {flight.callsign || 'N/A'}</p>
-                                <p className="text-sm text-gray-600"><strong>Altitude:</strong> {flight.alt || 'N/A'} ft</p>
-                                <p className="text-sm text-gray-600"><strong>Ground Speed:</strong> {flight.gspeed || 'N/A'} knots</p>
-                                <p className="text-sm text-gray-600"><strong>Track/Heading:</strong> {flight.track || 'N/A'}°</p>
-                                <p className="text-sm text-gray-600"><strong>Origin:</strong> {flight.orig_icao || 'N/A'} ({flight.orig_iata || 'N/A'})</p>
-                                <p className="text-sm text-gray-600"><strong>Destination:</strong> {flight.dest_icao || 'N/A'} ({flight.dest_iata || 'N/A'})</p>
-                                <p className="text-sm text-gray-600">
-                                    <strong>ETA:</strong>{' '}
-                                    {flight.eta ?
-                                        new Intl.DateTimeFormat(userLocale, {
-                                            year: 'numeric',
-                                            month: 'short',
-                                            day: 'numeric',
-                                            hour: '2-digit',
-                                            minute: '2-digit',
-                                            timeZoneName: 'short'
-                                        }).format(new Date(flight.eta))
-                                        : 'N/A'}
-                                </p>
-                            </div>
+                    {/* Current Flight Details */}
+                    {flight && (
+                        <div className="flex-1 mb-6">
+                            <h3 className="font-semibold text-gray-800 mb-2">Current Flight</h3>
+                            <p className="text-sm text-gray-600"><strong>Flight:</strong> {flight.flight || 'N/A'}</p>
+                            <p className="text-sm text-gray-600"><strong>Callsign:</strong> {flight.callsign || 'N/A'}</p>
+                            <p className="text-sm text-gray-600"><strong>Altitude:</strong> {flight.alt || 'N/A'} ft</p>
+                            <p className="text-sm text-gray-600"><strong>Ground Speed:</strong> {flight.gspeed || 'N/A'} knots</p>
+                            <p className="text-sm text-gray-600"><strong>Track/Heading:</strong> {flight.track || 'N/A'}°</p>
+                            <p className="text-sm text-gray-600"><strong>Origin:</strong> {flight.orig_icao || 'N/A'} ({flight.orig_iata || 'N/A'})</p>
+                            <p className="text-sm text-gray-600"><strong>Destination:</strong> {flight.dest_icao || 'N/A'} ({flight.dest_iata || 'N/A'})</p>
+                            <p className="text-sm text-gray-600">
+                                <strong>ETA:</strong>{' '}
+                                {flight.eta
+                                    ? new Intl.DateTimeFormat(userLocale, {
+                                        year: 'numeric',
+                                        month: 'short',
+                                        day: 'numeric',
+                                        hour: '2-digit',
+                                        minute: '2-digit',
+                                        timeZoneName: 'short',
+                                    }).format(new Date(flight.eta))
+                                    : 'N/A'}
+                            </p>
                         </div>
-                        <h2 className="text-lg font-semibold text-gray-800 mb-4">Map</h2>
+                    )}
+
+                    {/* Map Section */}
+                    <h2 className="text-lg font-semibold text-gray-800 mb-4">Map</h2>
+                    {flight && (
                         <div style={{ width: '100%', height: '26rem' }}>
                             <Map
                                 defaultCenter={[flight.lat, flight.lon]}
@@ -233,48 +234,50 @@ export default function Details({ params: paramsPromise }) {
                                         style={{
                                             width: '24px',
                                             height: '24px',
-                                            transform: `rotate(${flight.track - 90}deg)`
+                                            transform: `rotate(${flight.track - 90}deg)`,
                                         }}
                                     />
                                 </Marker>
                             </Map>
                         </div>
-                    </div>
-                )}
+                    )}
+                </div>
 
                 {/* Flight History Table */}
-                <div className="flex-1">
+                <div className="lg:flex-1 bg-white shadow-md rounded-lg p-6">
                     <h2 className="text-lg font-semibold text-gray-800 mb-4">Flight History</h2>
-                    <table className="w-full table-auto border-collapse">
-                        <thead>
-                            <tr>
-                                <th className="border px-4 py-2">Callsign</th>
-                                <th className="border px-4 py-2">Departure Airport</th>
-                                <th className="border px-4 py-2">Departure Time</th>
-                                <th className="border px-4 py-2">Arrival Airport</th>
-                                <th className="border px-4 py-2">Arrival Time</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {mockFlightHistory.map((flight, index) => (
-                                <tr key={index}>
-                                    <td className="border px-4 py-2">{flight.callsign?.trim() || 'N/A'}</td>
-                                    <td className="border px-4 py-2">{flight.estDepartureAirport || 'N/A'}</td>
-                                    <td className="border px-4 py-2">
-                                        {flight.firstSeen
-                                            ? new Date(flight.firstSeen * 1000).toLocaleString()
-                                            : 'N/A'}
-                                    </td>
-                                    <td className="border px-4 py-2">{flight.estArrivalAirport || 'N/A'}</td>
-                                    <td className="border px-4 py-2">
-                                        {flight.lastSeen
-                                            ? new Date(flight.lastSeen * 1000).toLocaleString()
-                                            : 'N/A'}
-                                    </td>
+                    <div className="overflow-x-auto">
+                        <table className="w-full table-auto border-collapse">
+                            <thead>
+                                <tr>
+                                    <th className="border px-4 py-2">Callsign</th>
+                                    <th className="border px-4 py-2">Departure Airport</th>
+                                    <th className="border px-4 py-2">Departure Time</th>
+                                    <th className="border px-4 py-2">Arrival Airport</th>
+                                    <th className="border px-4 py-2">Arrival Time</th>
                                 </tr>
-                            ))}
-                        </tbody>
-                    </table>
+                            </thead>
+                            <tbody>
+                                {mockFlightHistory.map((flight, index) => (
+                                    <tr key={index}>
+                                        <td className="border px-4 py-2">{flight.callsign?.trim() || 'N/A'}</td>
+                                        <td className="border px-4 py-2">{flight.estDepartureAirport || 'N/A'}</td>
+                                        <td className="border px-4 py-2">
+                                            {flight.firstSeen
+                                                ? new Date(flight.firstSeen * 1000).toLocaleString()
+                                                : 'N/A'}
+                                        </td>
+                                        <td className="border px-4 py-2">{flight.estArrivalAirport || 'N/A'}</td>
+                                        <td className="border px-4 py-2">
+                                            {flight.lastSeen
+                                                ? new Date(flight.lastSeen * 1000).toLocaleString()
+                                                : 'N/A'}
+                                        </td>
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
         </div>
