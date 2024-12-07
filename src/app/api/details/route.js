@@ -111,7 +111,11 @@ export async function GET(request) {
     const openSkyData = await openSkyRes.json();
 
     // Append new flight history data
-    entry.flightHistory = [...entry.flightHistory, ...openSkyData];
+    entry.flightHistory = [...openSkyData, ...entry.flightHistory];
+
+    // Sort the flight history by `lastSeen` property in descending order
+    entry.flightHistory.sort((a, b) => b.lastSeen - a.lastSeen);
+
     entry.lastFlightHistoryCheck = new Date(); // Update the lastFlightHistoryCheck timestamp
     await entry.save();
 
@@ -121,4 +125,5 @@ export async function GET(request) {
         flight: currentFlight, // Always include live flight data
         flightHistory: entry.flightHistory,
     });
+
 }
