@@ -42,7 +42,7 @@ export default function JournalForm({ onAddEntry }) {
         const newEntry = {
             registration,
             interactionType,
-            location: interactionType === 'saw' ? location : null,
+            location: interactionType === 'saw' ? location : departureAirport,
             departureAirport: interactionType === 'flown' ? departureAirport : null,
             destinationAirport: interactionType === 'flown' ? destinationAirport : null,
             flightNumber: interactionType === 'flown' ? flightNumber : null,
