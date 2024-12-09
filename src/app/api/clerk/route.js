@@ -62,7 +62,7 @@ export async function POST(req) {
             let entry = await User.findOne({ email });
             if (entry) {
                 console.log("user already added")
-                new Response('Webhook received', { status: 200 });
+                return new Response('Webhook received', { status: 200 });
             }
 
             // Insert the new user into the database
