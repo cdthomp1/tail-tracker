@@ -49,7 +49,7 @@ export async function GET(request) {
 
     if (recentFlight) {
         // Recent flight found within the last hour
-        console.log('Recent flight found within the last hour:', recentFlight);
+        console.log('Recent flight found within the last hour:', recentFlight.callsign);
         return NextResponse.json({
             ...entry._doc,
             aircraft: aircraftData.response.aircraft,
@@ -87,7 +87,7 @@ export async function GET(request) {
     const url = `https://opensky-network.org/api/flights/aircraft?icao24=${aircraftData.response.aircraft.mode_s.toLowerCase()}&begin=${begin}&end=${currentEpoch}`;
 
     // Fetch flight history from OpenSky
-    console.log("CALLING OPENSKY");
+    console.log("CALLING OPENSKY", url);
     const openSkyRes = await fetch(
         url,
         {
@@ -100,6 +100,8 @@ export async function GET(request) {
 
     if (!openSkyRes.ok) {
         console.error('OpenSky API error:', await openSkyRes.text());
+        entry.lastFlightHistoryCheck = new Date(); // Update the lastFlightHistoryCheck timestamp
+        await entry.save();
         return NextResponse.json({
             ...entry._doc,
             aircraft: aircraftData.response.aircraft,

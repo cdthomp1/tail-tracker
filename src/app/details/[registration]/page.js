@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { Map, Marker } from 'pigeon-maps';
+import FlightHistory from '@/app/components/FlightHistory';
 
 export default function Details({ params: paramsPromise }) {
     const [params, setParams] = useState(null);
@@ -204,41 +205,7 @@ export default function Details({ params: paramsPromise }) {
                 </div>
 
                 {/* Flight History Table */}
-                <div className="lg:flex-1 bg-white shadow-md rounded-lg p-6">
-                    <h2 className="text-lg font-semibold text-gray-800 mb-4">Flight History</h2>
-                    <div className="overflow-x-auto max-h-[800px] overflow-y-auto">
-                        <table className="w-full table-auto border-collapse">
-                            <thead>
-                                <tr>
-                                    <th className="border px-4 py-2">Callsign</th>
-                                    <th className="border px-4 py-2">Departure Airport</th>
-                                    <th className="border px-4 py-2">Departure Time</th>
-                                    <th className="border px-4 py-2">Arrival Airport</th>
-                                    <th className="border px-4 py-2">Arrival Time</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {flightHistory.map((flight, index) => (
-                                    <tr key={index}>
-                                        <td className="border px-4 py-2">{flight.callsign?.trim() || 'N/A'}</td>
-                                        <td className="border px-4 py-2">{flight.estDepartureAirport || 'N/A'}</td>
-                                        <td className="border px-4 py-2">
-                                            {flight.firstSeen
-                                                ? new Date(flight.firstSeen * 1000).toLocaleString()
-                                                : 'N/A'}
-                                        </td>
-                                        <td className="border px-4 py-2">{flight.estArrivalAirport || 'N/A'}</td>
-                                        <td className="border px-4 py-2">
-                                            {flight.lastSeen
-                                                ? new Date(flight.lastSeen * 1000).toLocaleString()
-                                                : 'N/A'}
-                                        </td>
-                                    </tr>
-                                ))}
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
+                <FlightHistory flightHistory={flightHistory} />
 
             </div>
         </div>

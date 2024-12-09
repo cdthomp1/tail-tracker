@@ -35,12 +35,7 @@ export default function Home() {
       <h1 className="text-2xl md:text-3xl font-bold text-gray-800 mb-6 text-center">
         TailTracker
       </h1>
-      <div className="w-full max-w-2xl bg-white shadow-md rounded-lg p-4 mb-6">
-        <JournalForm onAddEntry={addEntry} />
-      </div>
-      <div className="w-full max-w-6xl">
-        <EntriesList entries={entries} onDelete={deleteEntry} />
-      </div>
+      <p>Login to see and add entries</p>
     </div>
   );
 }
