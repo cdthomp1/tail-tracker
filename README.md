@@ -1,36 +1,42 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# Overview
 
-## Getting Started
+TailTracker is a web-based airplane journal app designed for aviation enthusiasts to track airplanes they have seen or flown on. As a software engineer, this project is a step toward expanding my understanding of modern web development practices, including building applications that are interactive, visually appealing, and user-friendly.
 
-First, run the development server:
+This software allows users to log airplane details such as tail numbers, aircraft types, airlines, and flight routes. Users can view their collection in an organized way and sort or filter based on various criteria. TailTracker showcases my ability to create an intuitive and functional user interface while reinforcing my knowledge of JavaScript and its ecosystem.
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+The purpose of writing TailTracker was to deepen my understanding of JavaScript, particularly its application in frameworks like Next.js, and to explore full-stack web development by integrating a front-end interface with back-end data storage.
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+[Software Demo Video](https://www.youtube.com/watch?v=75xr-ZoatXo)
 
-You can start editing the page by modifying `app/page.js`. The page auto-updates as you edit the file.
+# Development Environment
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+To develop TailTracker, I used the following tools:
 
-## Learn More
+- **Development Tools**: Visual Studio Code, Git, and GitHub for version control
+- **Programming Language**: JavaScript, specifically with Next.js (v15.0.3)
+- **Libraries**:
+  - `cloudinary` (v2.5.1): For image uploads and management
+  - `mongoose` (v8.8.2): For interacting with the MongoDB database
+  - `next` (v15.0.3): Framework for building the web application
+  - `pigeon-maps` (v0.21.6): For rendering maps to visualize airplane routes or airport locations
+  - `react` (v19.0.0-rc-66855b96-20241106) and `react-dom` (same version): For building user interfaces
+  - `tailwindcss` (v3.4.1): For styling the application
+  - `postcss` (v8): For processing CSS
 
-To learn more about Next.js, take a look at the following resources:
+The development environment also included `npm` for managing dependencies and `next` scripts for running, building, and linting the project.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+# Useful Websites
 
-## Deploy on Vercel
+- [Next.js Documentation](https://nextjs.org/docs)
+- [Tailwind CSS Documentation](https://tailwindcss.com/docs)
+- [MongoDB Documentation](https://www.mongodb.com/docs)
+- [JavaScript Info](https://javascript.info)
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+# Future Work
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- Add user authentication and authorization to allow multiple users to manage their own airplane logs securely.
+- Implement a search feature to quickly find specific airplanes in the journal.
+- Enhance the app with visualizations like charts showing airplane types or most frequent airlines.
+- Optimize the application for mobile users with improved responsive design.
+- Integrate with aviation APIs to fetch additional airplane data automatically.
