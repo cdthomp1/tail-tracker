@@ -5,9 +5,9 @@ const webhookSecret = process.env.CLERK_WEBHOOK_SECRET; // Store securely in .en
 
 export async function POST(request) {
     console.log("Here in web hook")
-    if (req.method !== 'POST') {
-        return res.status(405).json({ message: 'Method not allowed' });
-    }
+    // if (request.method !== 'POST') {
+    //     return res.status(405).json({ message: 'Method not allowed' });
+    // }
 
     const payload = request.body;
     const signature = request.headers['clerk-signature'];
