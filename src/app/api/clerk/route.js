@@ -1,5 +1,6 @@
 import { Webhook } from '@clerk/clerk-sdk-node';
 import { connectToDatabase } from '@/app/lib/mongodb';
+import { NextResponse } from 'next/server';
 
 const webhookSecret = process.env.CLERK_WEBHOOK_SECRET; // Store securely in .env.local
 
