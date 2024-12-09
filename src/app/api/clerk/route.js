@@ -1,6 +1,7 @@
 import { Webhook } from 'svix';
 import { headers } from 'next/headers';
-import { connectToDatabase } from '@/app/lib/mongodb';
+import { connectToDatabase } from '../../lib/mongodb';
+import User from '../../models/User';
 
 export async function POST(req) {
     const SIGNING_SECRET = process.env.SIGNING_SECRET;
@@ -55,9 +56,7 @@ export async function POST(req) {
     if (eventType === 'user.created') {
         // Save to MongoDB
         try {
-            const db = await connectToDatabase();
-            const collection = db.collection('users');
-
+            await connectToDatabase();
             const email = email_addresses[0]?.email_address || null;
 
             // Insert the new user into the database
@@ -70,7 +69,9 @@ export async function POST(req) {
                 createdAt: new Date(),
             };
 
-            await collection.insertOne(newUser);
+            var user = User(newUser)
+
+            await user.save()
             console.log('User successfully saved to the database:', newUser);
         } catch (error) {
             console.error('Error saving user to database:', error);
