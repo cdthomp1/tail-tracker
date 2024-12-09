@@ -3,13 +3,14 @@ import { connectToDatabase } from '@/app/lib/mongodb';
 
 const webhookSecret = process.env.CLERK_WEBHOOK_SECRET; // Store securely in .env.local
 
-export default async function handler(req, res) {
+export async function POST(request) {
+    console.log("Here in web hook")
     if (req.method !== 'POST') {
         return res.status(405).json({ message: 'Method not allowed' });
     }
 
-    const payload = req.body;
-    const signature = req.headers['clerk-signature'];
+    const payload = request.body;
+    const signature = request.headers['clerk-signature'];
 
     try {
         // Verify the webhook signature
@@ -25,14 +26,15 @@ export default async function handler(req, res) {
 
             // Insert the new user
             await collection.insertOne({ userId, email, createdAt: new Date() });
+            console.log("User created and saved to database")
 
-            return res.status(200).json({ message: 'User created and saved to database' });
+            return NextResponse.json({ message: 'User created and saved to database' });
         }
 
-        return res.status(400).json({ message: 'Unhandled event type' });
+        return NextResponse.json({ message: 'Unhandled event type' });
     } catch (error) {
         console.error('Error processing webhook:', error);
-        return res.status(400).json({ message: 'Invalid webhook payload' });
+        return NextResponse.json({ message: 'Invalid webhook payload' });
     }
 }
 ``
