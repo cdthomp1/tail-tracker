@@ -31,7 +31,7 @@ export default function page() {
     };
 
     return (
-        <div className="min-h-screen bg-gray-50 flex flex-col items-center py-6 px-4 sm:px-8">
+        <div className="min-h-screen bg-gradient-to-b from-blue-100 to-gray-50 flex flex-col items-center py-6 px-4 sm:px-8">
             <h1 className="text-2xl md:text-3xl font-bold text-gray-800 mb-6 text-center">
                 TailTracker
             </h1>

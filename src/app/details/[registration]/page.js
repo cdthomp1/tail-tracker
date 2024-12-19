@@ -27,6 +27,7 @@ export default function Details({ params: paramsPromise }) {
 
                 const res = await fetch(`/api/details?registration=${registration}`);
                 const result = await res.json();
+                console.log(result)
 
                 if (result.error) {
                     throw new Error(result.error);
@@ -56,7 +57,7 @@ export default function Details({ params: paramsPromise }) {
     if (loading) return <p className="text-center text-gray-500">Loading...</p>;
     if (error) return <p className="text-center text-red-500">{error}</p>;
 
-    const { aircraft, flight, image, location, date, notes, interactionType, flightHistory } = data || {};
+    const { aircraft, flight, image, location, date, notes, interactionType, flightHistory, destinationAirport, departureAirport } = data || {};
     const photos = [image, aircraft?.url_photo].filter(Boolean);
 
     const handleNextPhoto = () => {
@@ -72,7 +73,7 @@ export default function Details({ params: paramsPromise }) {
     const userLocale = navigator.language || 'en-US';
 
     return (
-        <div className="min-h-screen bg-gray-50 py-6 px-4 sm:px-8">
+        <div className="min-h-screen bg-gradient-to-b from-blue-100 to-gray-50 py-6 px-4 sm:px-8">
             <button
                 onClick={() => router.back()}
                 className="mb-4 px-4 py-2 bg-indigo-600 text-white rounded-md shadow hover:bg-indigo-700"
@@ -100,9 +101,16 @@ export default function Details({ params: paramsPromise }) {
 
                     <div>
                         <h2 className="text-lg font-semibold text-gray-800 mt-4 mb-2">Sighting Info</h2>
+
                         <div className="space-y-2">
-                            <p className="text-sm text-gray-600"><strong>Location:</strong> {location || 'N/A'}</p>
-                            <p className="text-sm text-gray-600"><strong>Interaction:</strong> {interactionType || 'N/A'}</p>
+                            {interactionType === 'flown' && (
+                                <>
+                                    <p className="text-sm text-gray-600"><strong>Departure:</strong> {departureAirport || 'N/A'}</p>
+                                    <p className="text-sm text-gray-600"><strong>Arrival:</strong> {destinationAirport || 'N/A'}</p>
+                                </>
+                            )}
+                            {interactionType !== 'flown' && (<p className="text-sm text-gray-600"><strong>Location:</strong> {location || 'N/A'}</p>)}
+                            <p className="text-sm text-gray-600"><strong>Interaction:</strong> {interactionType ? interactionType.charAt(0).toUpperCase() + interactionType.slice(1) : 'N/A'}</p>
                             <p className="text-sm text-gray-600"><strong>Date:</strong> {new Date(date).toLocaleString(userLocale) || 'N/A'}</p>
                             <p className="text-sm text-gray-600"><strong>Notes:</strong> {notes}</p>
                         </div>
@@ -137,7 +145,11 @@ export default function Details({ params: paramsPromise }) {
                                 )}
                             </>
                         ) : (
-                            <p className="text-center text-gray-500">No photos available</p>
+                            <img
+                                src="https://res.cloudinary.com/cameron-projects/image/upload/v1734630411/tailtracker/bhpfq1obxmdxcw7xa4sz.jpg"
+                                alt="Stock image of metal toy plane"
+                                className="w-full h-80 object-cover rounded-md"
+                            />
                         )}
                     </div>
                 </div>

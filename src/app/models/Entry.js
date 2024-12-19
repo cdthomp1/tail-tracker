@@ -29,7 +29,8 @@ const EntrySchema = new mongoose.Schema({
         ],
         default: [], // Set an empty array as the default value
     },
-    lastFlightHistoryCheck: { type: Date, default: Date.now }
+    lastFlightHistoryCheck: { type: Date, default: Date.now },
+    userId: { type: String, required: true }, // Link to the User model
 });
 
 export default mongoose.models.Entry || mongoose.model('Entry', EntrySchema);

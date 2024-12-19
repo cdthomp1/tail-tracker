@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import { useAuth } from '@clerk/nextjs'; // Import Clerk's useAuth hook to get the userId
 
 export default function JournalForm({ onAddEntry }) {
     const [registration, setRegistration] = useState('');
@@ -12,6 +13,8 @@ export default function JournalForm({ onAddEntry }) {
     const [notes, setNotes] = useState(''); // Flight notes
     const [image, setImage] = useState(null);
     const [loading, setLoading] = useState(false); // Loading state
+
+    const { userId } = useAuth(); // Get the authenticated user's ID
 
     const handleImageUpload = async (file) => {
         const reader = new FileReader();
@@ -40,6 +43,7 @@ export default function JournalForm({ onAddEntry }) {
         }
 
         const newEntry = {
+            userId, // Include the userId in the entry
             registration,
             interactionType,
             location: interactionType === 'saw' ? location : departureAirport,
@@ -73,7 +77,6 @@ export default function JournalForm({ onAddEntry }) {
 
             {loading && <p className="text-center text-indigo-600">Submitting...</p>}
 
-            {/* Form Fields */}
             {!loading && (
                 <>
                     <div>
