@@ -15,10 +15,13 @@ export default function EntriesList({ entries, onDelete }) {
 
     // Apply sorting to the entries based on the selected option
     const sortedEntries = [...entries].sort((a, b) => {
+        const getLastSightingDate = (entry) =>
+            new Date(entry.sightings?.[entry.sightings.length - 1]?.date || 0);
+
         if (sortOption === 'dateDescending') {
-            return new Date(b.date) - new Date(a.date);
+            return getLastSightingDate(b) - getLastSightingDate(a);
         } else if (sortOption === 'dateAscending') {
-            return new Date(a.date) - new Date(b.date);
+            return getLastSightingDate(a) - getLastSightingDate(b);
         } else if (sortOption === 'registration') {
             return a.registration.localeCompare(b.registration);
         }
@@ -56,50 +59,70 @@ export default function EntriesList({ entries, onDelete }) {
 
             {/* Entries List */}
             <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
-                {sortedEntries.map((entry) => (
-                    <div
-                        key={entry._id}
-                        className="bg-white shadow-lg rounded-lg border border-gray-200 overflow-hidden hover:shadow-xl transition-shadow"
-                    >
-                        <Link
-                            href={{
-                                pathname: `/details/${entry.registration}`,
-                            }}
-                            className="block"
-                        >
-                            {/* Image */}
-                            {entry.image ? (
-                                <img
-                                    src={entry.image}
-                                    alt="Aircraft"
-                                    className="w-full h-48 object-cover"
-                                />
-                            ) : (
-                                <img
-                                    src="https://res.cloudinary.com/cameron-projects/image/upload/v1734630411/tailtracker/bhpfq1obxmdxcw7xa4sz.jpg"
-                                    alt="Aircraft"
-                                    className="w-full h-48 object-cover"
-                                />
-                            )}
+                {sortedEntries.map((entry) => {
+                    // Get the last sighting for display
+                    const lastSighting =
+                        entry.sightings?.[entry.sightings.length - 1] || {};
 
-                            {/* Content */}
-                            <div className="p-4">
-                                <h3 className="text-lg font-bold text-gray-800">
-                                    {entry.registration || 'Unknown Aircraft'}
-                                </h3>
-                                <p className="text-sm text-gray-600">
-                                    Interaction: {entry.interactionType === 'saw' ? 'Saw' : 'Flown'}
-                                </p>
-                                <p className="text-sm text-gray-700 mt-2">
-                                    <strong>Notes:</strong> {entry.notes || 'No notes provided'}
-                                </p>
-                                <p className="text-xs text-gray-500 mt-2">
-                                    {entry.date && new Date(entry.date).toLocaleDateString()}
-                                </p>
-                            </div>
-                        </Link>
-                    </div>
-                ))}
+                    return (
+                        <div
+                            key={entry._id}
+                            className="bg-white shadow-lg rounded-lg border border-gray-200 overflow-hidden hover:shadow-xl transition-shadow"
+                        >
+                            <Link
+                                href={{
+                                    pathname: `/details/${entry.registration}`,
+                                }}
+                                className="block"
+                            >
+                                {/* Image */}
+                                {lastSighting.image ? (
+                                    <img
+                                        src={lastSighting.image}
+                                        alt="Aircraft"
+                                        className="w-full h-48 object-cover"
+                                    />
+                                ) : (
+                                    <img
+                                        src="https://res.cloudinary.com/cameron-projects/image/upload/v1734630411/tailtracker/bhpfq1obxmdxcw7xa4sz.jpg"
+                                        alt="Aircraft"
+                                        className="w-full h-48 object-cover"
+                                    />
+                                )}
+
+                                {/* Content */}
+                                <div className="p-4">
+                                    <h3 className="text-lg font-bold text-gray-800">
+                                        {entry.registration || 'Unknown Aircraft'}
+                                    </h3>
+                                    <p className="text-sm text-gray-600">
+                                        Interaction:{' '}
+                                        {lastSighting.interactionType === 'flown'
+                                            ? 'Flown'
+                                            : 'Saw'}
+                                    </p>
+                                    <p className="text-sm text-gray-700 mt-2">
+                                        <strong>Notes:</strong>{' '}
+                                        {lastSighting.notes || 'No notes provided'}
+                                    </p>
+                                    <p className="text-xs text-gray-500 mt-2">
+                                        {lastSighting.date &&
+                                            new Date(
+                                                lastSighting.date
+                                            ).toLocaleDateString()}
+                                    </p>
+                                </div>
+                            </Link>
+                            {/* <button
+                                onClick={() => handleDelete(entry._id)}
+                                disabled={deletingId === entry._id}
+                                className="w-full px-4 py-2 bg-red-500 text-white text-sm font-medium hover:bg-red-600 disabled:opacity-50"
+                            >
+                                {deletingId === entry._id ? 'Deleting...' : 'Delete'}
+                            </button> */}
+                        </div>
+                    );
+                })}
             </div>
         </div>
     );

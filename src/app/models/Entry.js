@@ -1,7 +1,6 @@
 import mongoose from 'mongoose';
 
-const EntrySchema = new mongoose.Schema({
-    registration: { type: String, required: true },
+const SightingSchema = new mongoose.Schema({
     interactionType: { type: String, enum: ['saw', 'flown'], required: true },
     location: { type: String },
     departureAirport: { type: String },
@@ -10,6 +9,11 @@ const EntrySchema = new mongoose.Schema({
     notes: { type: String },
     image: { type: String },
     date: { type: Date, default: Date.now },
+});
+
+const EntrySchema = new mongoose.Schema({
+    registration: { type: String, required: true },
+    sightings: { type: [SightingSchema], default: [] }, // Array of sightings
     flightHistory: {
         type: [
             {
@@ -27,7 +31,7 @@ const EntrySchema = new mongoose.Schema({
                 arrivalAirportCandidatesCount: { type: Number },
             },
         ],
-        default: [], // Set an empty array as the default value
+        default: [], // Shared flight history for the entire entry
     },
     lastFlightHistoryCheck: { type: Date, default: Date.now },
     userId: { type: String, required: true }, // Link to the User model
