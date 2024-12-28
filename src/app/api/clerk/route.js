@@ -89,3 +89,7 @@ export async function POST(req) {
 
     return new Response('Webhook received', { status: 200 });
 }
+
+export async function GET() {
+    return Response.json({ message: 'Hello World!' })
+}
