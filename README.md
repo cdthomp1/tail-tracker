@@ -35,8 +35,8 @@ The development environment also included `npm` for managing dependencies and `n
 
 # Future Work
 
-- Add user authentication and authorization to allow multiple users to manage their own airplane logs securely.
-- Implement a search feature to quickly find specific airplanes in the journal.
-- Enhance the app with visualizations like charts showing airplane types or most frequent airlines.
-- Optimize the application for mobile users with improved responsive design.
-- Integrate with aviation APIs to fetch additional airplane data automatically.
+- [x] Add user authentication and authorization to allow multiple users to manage their own airplane logs securely.
+- [ ] Implement a search feature to quickly find specific airplanes in the journal.
+- [ ] Enhance the app with visualizations like charts showing airplane types or most frequent airlines.
+- [ ] Optimize the application for mobile users with improved responsive design.
+- [ ] Integrate with aviation APIs to fetch additional airplane data automatically.
