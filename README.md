@@ -37,6 +37,7 @@ The development environment also included `npm` for managing dependencies and `n
 
 - [x] Add user authentication and authorization to allow multiple users to manage their own airplane logs securely.
 - [ ] Implement a search feature to quickly find specific airplanes in the journal.
-- [ ] Enhance the app with visualizations like charts showing airplane types or most frequent airlines.
-- [ ] Optimize the application for mobile users with improved responsive design.
-- [ ] Integrate with aviation APIs to fetch additional airplane data automatically.
+- [ ] Create a share link with the user id and tail number, don't block on auth status
+- [ ] Update layout to be mobile friendly, currenlty diffucult to use the map
+- [ ] Update form to use the new sighting array, append to array if tail number is already entered in the DB 
+
