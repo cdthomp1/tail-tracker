@@ -5,7 +5,7 @@ import User from '../../models/User';
 
 export async function POST(req) {
     const SIGNING_SECRET = process.env.SIGNING_SECRET;
-
+    console.log("BEGIN WEBHOOK PROCESS")
     if (!SIGNING_SECRET) {
         throw new Error('Error: Please add SIGNING_SECRET from Clerk Dashboard to .env or .env.local');
     }
